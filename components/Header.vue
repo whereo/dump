@@ -2,7 +2,7 @@
   <header class="fixed inset-x-0 top-0 z-50">
     <div class="max-w-2xl w-auto pt-8 mx-auto px-8">
       <nav
-        class="flex justify-between items-center bg-white bg-opacity-70 backdrop-blur-lg rounded-xl flex gap-x-8 px-2 shadow"
+        class="flex justify-between items-center bg-white bg-opacity-75 backdrop-blur-lg rounded-xl flex gap-x-8 px-2 shadow"
         aria-label="Global"
       >
         <div class="flex items-center">

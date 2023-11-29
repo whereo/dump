@@ -1,40 +1,12 @@
 <template>
   <div class="relative pt-14">
-    <!-- <div
-          class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
-          aria-hidden="true"
-        >
-          <div
-            class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-            style="
-              clip-path: polygon(
-                74.1% 44.1%,
-                100% 61.6%,
-                97.5% 26.9%,
-                85.5% 0.1%,
-                80.7% 2%,
-                72.5% 32.5%,
-                60.2% 62.4%,
-                52.4% 68.1%,
-                47.5% 58.3%,
-                45.2% 34.5%,
-                27.5% 76.7%,
-                0.1% 64.9%,
-                17.9% 100%,
-                27.6% 76.8%,
-                76.1% 97.7%,
-                74.1% 44.1%
-              );
-            "
-          />
-        </div> -->
     <div class="py-24 sm:py-32">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-2xl text-center">
           <h1
             class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl"
           >
-            Finde das richtige Rezept
+            Einfach das richtige Rezept finden
           </h1>
           <p class="mt-6 text-lg leading-8 text-gray-700">
             Organisiere deine Lieblingsrezepte zentral an einem Ort. Egal, ob du
@@ -55,7 +27,8 @@
         </div>
         <div class="mt-16 flow-root sm:mt-24">
           <div
-            class="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4"
+            ref="target"
+            class="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4 opacity-0"
           >
             <img
               src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&format=auto&fit=crop&w=2432"
@@ -84,3 +57,37 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+const target = ref<HTMLElement>();
+
+useIntersectionObserver(target, ([{ isIntersecting }], observerElement) => {
+  if (!target.value) return;
+
+  if (isIntersecting) {
+    target.value.classList.add("slide-up");
+    observerElement.unobserve(target.value);
+  }
+});
+</script>
+
+<style scoped>
+.slide-up {
+  animation: slideUp 1.2s normal forwards ease-in-out;
+  animation-iteration-count: 1;
+}
+
+@keyframes slideUp {
+  0%,
+  50% {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+</style>

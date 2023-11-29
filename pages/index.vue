@@ -3,7 +3,7 @@
   <HeroSection />
 
   <!-- Feature section -->
-  <FeatureSection />
+  <FeaturesSection />
 
   <!-- Testimonial section -->
   <TestimonialSection />
