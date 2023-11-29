@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#FFFAF2]">
+  <div class="min-h-full bg-[#FFFAF2]">
     <!-- Header -->
     <Header />
 

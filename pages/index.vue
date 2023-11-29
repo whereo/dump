@@ -3,10 +3,10 @@
   <HeroSection />
 
   <!-- Feature section -->
-  <FeaturesSection />
+  <FeaturesSection id="features" />
 
   <!-- Testimonial section -->
-  <TestimonialSection />
+  <!-- <TestimonialSection /> -->
 
   <!-- Pricing section -->
   <PricingSection />

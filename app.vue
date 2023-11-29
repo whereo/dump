@@ -1,6 +1,8 @@
 <template>
-  <NuxtLayout name="default">
+  <NuxtLayout>
     <NuxtPage />
+
+    <NotificationContainer />
   </NuxtLayout>
 </template>
 

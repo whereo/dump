@@ -5,7 +5,7 @@
       aria-hidden="true"
     >
       <div
-        class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-[#ff80b5] to-[#9089fc] opacity-25"
+        class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-[#fdd7aa] to-[#ea580c] opacity-20"
         style="
           clip-path: polygon(
             73.6% 48.6%,
@@ -50,7 +50,7 @@
       aria-hidden="true"
     >
       <div
-        class="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30"
+        class="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-[#fdd7aa] to-[#ea580c] opacity-30"
         style="
           clip-path: polygon(
             74.1% 44.1%,

@@ -105,7 +105,7 @@ const tiers = [
     id: "commis-de-cuisine",
     href: "#",
     priceMonthly: 0,
-    description: "Die Grundlagen für jeden Jungkoch.",
+    description: "Die Grundlagen für jede:n Jungköch:in.",
     features: [
       "5 products",
       "Up to 1,000 subscribers",
@@ -119,7 +119,7 @@ const tiers = [
     id: "chef-de-partie",
     href: "#",
     priceMonthly: 5,
-    description: "Die passende Ausstattung für jeden gelernten Koch.",
+    description: "Die passende Ausstattung für jede:n gelernte:n Köch:in.",
     features: [
       "25 products",
       "Up to 10,000 subscribers",
@@ -134,7 +134,7 @@ const tiers = [
     id: "chef-de-cuisine",
     href: "#",
     priceMonthly: 10,
-    description: "Absolut alles, was ein Küchenchef benötigt.",
+    description: "Absolut alles, was ein:e Küchenchef:in benötigt.",
     features: [
       "Unlimited products",
       "Unlimited subscribers",

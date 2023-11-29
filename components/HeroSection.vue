@@ -73,18 +73,18 @@ useIntersectionObserver(target, ([{ isIntersecting }], observerElement) => {
 
 <style scoped>
 .slide-up {
-  animation: slideUp 1.2s normal forwards ease-in-out;
+  animation: slideUp 0.4s normal forwards ease-in-out;
   animation-iteration-count: 1;
 }
 
 @keyframes slideUp {
   0%,
-  50% {
-    transform: translateY(50px);
+  10% {
+    transform: translateY(100%);
     opacity: 0;
   }
 
-  60%,
+  90%,
   100% {
     transform: translateY(0);
     opacity: 1;
