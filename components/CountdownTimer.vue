@@ -60,7 +60,7 @@ import {
 
 const props = defineProps<{
   name: string;
-  seconds: number;
+  duration: number | string;
 }>();
 
 const emit = defineEmits<{
@@ -71,19 +71,15 @@ const playing = ref(false);
 const interval = ref();
 
 const secondsLeft = ref(0);
-const timerName = ref("Timer");
 
 const inputRef = ref<HTMLInputElement>();
 const onEditClick = () => {
   inputRef.value?.focus();
 };
 
-const calculatedWidth = computed(() => {
-  return timerName.value ? timerName.value.length : 1;
-});
-
 watchEffect(() => {
-  secondsLeft.value = props.seconds;
+  const isString = typeof props.duration === "string";
+  secondsLeft.value = isString ? Number(props.duration) : props.duration;
 });
 
 const timeLeft = computed(() => {
@@ -97,7 +93,7 @@ const timeLeft = computed(() => {
 });
 
 const timeElapsed = computed(
-  () => props.seconds > secondsLeft.value || interval.value,
+  () => props.duration > secondsLeft.value || interval.value,
 );
 
 const onToggleTimer = () => {
@@ -141,7 +137,7 @@ const stopTimer = () => {
 };
 
 const resetTimer = () => {
-  secondsLeft.value = props.seconds;
+  secondsLeft.value = props.duration;
   stopTimer();
 };
 

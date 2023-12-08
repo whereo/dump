@@ -9,7 +9,7 @@
         class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6"
       >
         <div class="flex h-16 shrink-0 items-center">
-          <a href="/me" class="flex items-center gap-x-2">
+          <a href="#" class="flex items-center gap-x-2">
             <Logo />
           </a>
         </div>
@@ -153,7 +153,7 @@ import {
 
 const navigation = [
   { name: "Übersicht", href: "/dashboard", icon: HomeIcon, current: true },
-  { name: "Rezept", href: "/recipe", icon: UsersIcon, current: false },
+  { name: "Rezept", href: "/recipes", icon: UsersIcon, current: false },
   { name: "Projects", href: "#", icon: FolderIcon, current: false },
   { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
   { name: "Documents", href: "#", icon: DocumentDuplicateIcon, current: false },

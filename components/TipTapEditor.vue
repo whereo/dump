@@ -24,18 +24,14 @@
         Bullet List
       </button>
       <button
-        @click="editor.chain().focus().toggleTimer().run()"
+        @click="editor.chain().focus().addTimer().run()"
         :class="{ 'is-active': editor.isActive('bulletList') }"
       >
         Timer
       </button>
     </FloatingMenu>
+
     <EditorContent :editor="editor" />
-
-    <pre class="text-xs">{{ json }}</pre>
-
-    Output<br />
-    <GenerateHTML />
   </template>
 </template>
 
@@ -45,13 +41,34 @@ import { StarterKit } from "@tiptap/starter-kit";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { onMounted, onBeforeUnmount } from "vue";
 
-import CountdownTimer from "./tiptap-extensions/CountdownTimer";
+import CountdownTimer from "./tiptap/extensions/CountdownTimer";
 
-const editor = ref(null);
+const props = defineProps<{
+  modelValue: string;
+}>();
 
-const json = computed(() => {
-  if (!editor.value) return "";
-  return editor.value.getJSON();
+const emit = defineEmits<{
+  (e: "update:modelValue", html: string): void;
+  (e: "pointerenter"): void;
+  (e: "pointerleave"): void;
+}>();
+
+const editor = ref<Editor>();
+
+watchEffect(() => {
+  if (!editor.value) return;
+
+  // HTML
+  const isSame = editor.value.getHTML() === props.modelValue;
+
+  // JSON
+  // const isSame = JSON.stringify(this.editor.getJSON()) === JSON.stringify(props.modelValue)
+
+  if (isSame) {
+    return;
+  }
+
+  editor.value.commands.setContent(props.modelValue, false);
 });
 
 onMounted(() => {
@@ -75,16 +92,15 @@ onMounted(() => {
           "prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none",
       },
     },
-    content: `
-        This is some default text
+    onUpdate: () => {
+      if (!editor.value) return;
 
-        <div class="bg-red-200">some block<input /></div>
+      // HTML
+      emit("update:modelValue", editor.value.getHTML());
 
-        <countdown-timer name="" duration="10"></countdown-timer>
-
-        This is some default text
-
-      `,
+      // JSON
+      // this.$emit('update:modelValue', this.editor.getJSON())
+    },
   });
 });
 

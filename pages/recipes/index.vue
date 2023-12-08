@@ -84,8 +84,6 @@
             />
           </div>
         </template>
-
-        <GenerateHTML />
       </div>
     </NuxtLayout>
   </div>
