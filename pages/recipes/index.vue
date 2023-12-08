@@ -80,7 +80,6 @@
               v-if="instruction.timer"
               :name="instruction.timer.name"
               :seconds="instruction.timer.duration"
-              @finished="onTimerFinished(instruction)"
             />
           </div>
         </template>
@@ -107,28 +106,6 @@ type Instruction = {
     title?: string;
     source: string;
   }[];
-};
-
-const { addMessage } = useNotification();
-
-const onTimerFinished = (instruction: Instruction) => {
-  const title = instruction.timer?.name ?? "Timer";
-
-  addMessage({
-    title,
-    content: "Timer fertig",
-    action: {
-      name: "Schritt anzeigen",
-      callback: () => {
-        console.log("moin");
-      },
-    },
-  });
-
-  addMessage({
-    title,
-    content: "Timer fertig",
-  });
 };
 
 const tags = [

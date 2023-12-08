@@ -57,6 +57,7 @@ import {
   PlusIcon,
   MinusIcon,
 } from "@heroicons/vue/24/outline";
+import { useNotification } from "../../../composables/useNotification";
 
 const props = defineProps<{
   name: string;
@@ -66,6 +67,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "finished"): void;
 }>();
+
+const { addMessage } = useNotification();
 
 const playing = ref(false);
 const interval = ref();
@@ -119,6 +122,17 @@ const startTimer = () => {
     // Clear interval if reached zero
     if (secondsLeft.value <= 0) {
       emit("finished");
+
+      addMessage({
+        title: props.name,
+        content: "Timer fertig",
+        action: {
+          name: "Schritt anzeigen",
+          callback: () => {
+            console.log("moin");
+          },
+        },
+      });
 
       stopTimer();
     }

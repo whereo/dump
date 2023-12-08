@@ -1,38 +1,32 @@
 <template>
-  <template v-if="editor">
+  <div v-if="editor">
     <FloatingMenu
       class="bg-gray-100 rounded-full flex gap-x-4 px-2 py-px"
       :tippy-options="{ duration: 100, offset: [-30, 0] }"
       :editor="editor"
     >
-      <button
-        @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
+      <!-- <button
+        @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
+        :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }"
       >
-        H1
-      </button>
-      <button
-        @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
-      >
-        H2
-      </button>
-      <button
-        @click="editor.chain().focus().toggleBulletList().run()"
-        :class="{ 'is-active': editor.isActive('bulletList') }"
-      >
-        Bullet List
-      </button>
+        Überschrift
+      </button> -->
       <button
         @click="editor.chain().focus().addTimer().run()"
-        :class="{ 'is-active': editor.isActive('bulletList') }"
+        :class="{ 'is-active': editor.isActive('timer') }"
       >
         Timer
+      </button>
+      <button
+        @click="onAddStep"
+        :class="{ 'is-active': editor.isActive('instructionStep') }"
+      >
+        Step
       </button>
     </FloatingMenu>
 
     <EditorContent :editor="editor" />
-  </template>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -41,34 +35,40 @@ import { StarterKit } from "@tiptap/starter-kit";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { onMounted, onBeforeUnmount } from "vue";
 
-import CountdownTimer from "./tiptap/extensions/CountdownTimer";
+import CountdownTimer from "./tiptap/countdown-timer/index";
+import InstructionStep from "./tiptap/instruction-step/index";
 
 const props = defineProps<{
-  modelValue: string;
+  json: object;
 }>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", html: string): void;
-  (e: "pointerenter"): void;
-  (e: "pointerleave"): void;
+  (e: "update:json", json: string): void;
 }>();
 
 const editor = ref<Editor>();
 
+const getJSON = () => {
+  if (!editor.value) return "";
+
+  return editor.value.getJSON();
+};
+
+const getHTML = () => {
+  if (!editor.value) return "";
+
+  return editor.value.getHTML();
+};
+
 watchEffect(() => {
   if (!editor.value) return;
 
-  // HTML
-  const isSame = editor.value.getHTML() === props.modelValue;
+  const isSame =
+    JSON.stringify(editor.value.getJSON()) === JSON.stringify(props.json);
 
-  // JSON
-  // const isSame = JSON.stringify(this.editor.getJSON()) === JSON.stringify(props.modelValue)
+  if (isSame) return;
 
-  if (isSame) {
-    return;
-  }
-
-  editor.value.commands.setContent(props.modelValue, false);
+  editor.value.commands.setContent(props.json, false);
 });
 
 onMounted(() => {
@@ -76,10 +76,11 @@ onMounted(() => {
     extensions: [
       StarterKit,
       CountdownTimer,
+      InstructionStep,
       Placeholder.configure({
         placeholder: ({ node }) => {
           if (node.type.name === "heading") {
-            return "What’s the title?";
+            return "What's the title?";
           }
 
           return "Can you add some further context?";
@@ -95,13 +96,22 @@ onMounted(() => {
     onUpdate: () => {
       if (!editor.value) return;
 
-      // HTML
-      emit("update:modelValue", editor.value.getHTML());
-
-      // JSON
-      // this.$emit('update:modelValue', this.editor.getJSON())
+      emit("update:json", editor.value.getJSON());
     },
   });
+});
+
+const stepIndex = ref(1);
+
+const onAddStep = () => {
+  editor.value.chain().focus().addStep(stepIndex.value).run();
+
+  stepIndex.value++;
+};
+
+defineExpose({
+  getJSON,
+  getHTML,
 });
 
 onBeforeUnmount(() => {
