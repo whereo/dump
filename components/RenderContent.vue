@@ -1,7 +1,7 @@
 <script>
 import { h } from "vue";
-import CountdownTimer from "/components/tiptap/countdown-timer/CountdownTimer.vue";
-import InstructionStep from "/components/tiptap/instruction-step/InstructionStep.vue";
+import CountdownTimer from "/components/tiptap/countdown-timer/RenderTimer.vue";
+import InstructionStep from "/components/tiptap/instruction-step/RenderStep.vue";
 
 export default {
   props: {

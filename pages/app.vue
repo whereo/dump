@@ -16,6 +16,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "app",
+});
+
 const preferredMotion = usePreferredReducedMotion();
 const fullAnimation = computed(() => preferredMotion.value === "no-preference");
 

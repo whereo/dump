@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import { AppNotification } from "../types";
+import { AppNotification } from "@/types/types";
 
 const messages = ref<AppNotification[]>([]);
 

@@ -35,8 +35,8 @@ import { StarterKit } from "@tiptap/starter-kit";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { onMounted, onBeforeUnmount } from "vue";
 
-import CountdownTimer from "./tiptap/countdown-timer/index";
-import InstructionStep from "./tiptap/instruction-step/index";
+import CountdownTimer from "./countdown-timer/index";
+import InstructionStep from "./instruction-step/index";
 
 const props = defineProps<{
   json: object;

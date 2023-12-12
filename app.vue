@@ -14,7 +14,7 @@ export default defineNuxtComponent({
         class: "h-full",
       },
       bodyAttrs: {
-        class: "h-full",
+        class: "h-full w-full",
       },
     };
   },

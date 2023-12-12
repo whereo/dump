@@ -12,9 +12,7 @@
         ></div>
         <div class="flex items-center">
           <div>
-            <a href="/" class="flex items-center gap-x-2">
               <Logo />
-            </a>
           </div>
 
           <div class="hidden lg:block w-px h-4 mx-4 bg-black/20"></div>

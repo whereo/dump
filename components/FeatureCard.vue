@@ -65,6 +65,8 @@ const featureRef = ref<HTMLElement>();
 const imageRef = ref<HTMLElement>();
 
 onMounted(() => {
+  if (!featureRef.value) return;
+
   featureRef.value.classList.add("opacity-0");
 
   useIntersectionObserver(
@@ -79,6 +81,8 @@ onMounted(() => {
       }
     },
   );
+
+  if (!imageRef.value) return;
 
   imageRef.value.classList.add("scale-75");
 
