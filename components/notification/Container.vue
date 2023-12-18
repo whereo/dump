@@ -1,5 +1,8 @@
 <template>
-  <div v-if="true" class="fixed bottom-0 left-0 right-0 pointer-events-none">
+  <div
+    v-if="listNotifications"
+    class="fixed bottom-0 left-0 right-0 pointer-events-none"
+  >
     <TransitionGroup
       tag="div"
       name="list"

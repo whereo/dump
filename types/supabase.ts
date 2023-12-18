@@ -34,44 +34,101 @@ export interface Database {
       }
       recipes: {
         Row: {
+          author_id: string | null
           content: Json | null
           created_at: string
           description: string | null
           id: number
           ingredients: Json | null
-          owner_id: string | null
           portions_count: number | null
           title: string
         }
         Insert: {
+          author_id?: string | null
           content?: Json | null
           created_at?: string
           description?: string | null
           id?: number
           ingredients?: Json | null
-          owner_id?: string | null
           portions_count?: number | null
           title: string
         }
         Update: {
+          author_id?: string | null
           content?: Json | null
           created_at?: string
           description?: string | null
           id?: number
           ingredients?: Json | null
-          owner_id?: string | null
           portions_count?: number | null
           title?: string
         }
         Relationships: [
           {
-            foreignKeyName: "recipes_owner_id_fkey"
-            columns: ["owner_id"]
+            foreignKeyName: "recipes_author_id_fkey"
+            columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]
+      }
+      recipes_tags: {
+        Row: {
+          created_at: string
+          id: number
+          recipe_id: number | null
+          tag_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          recipe_id?: number | null
+          tag_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          recipe_id?: number | null
+          tag_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipes_tags_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipes_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      tags: {
+        Row: {
+          created_at: string
+          id: number
+          name: string | null
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name?: string | null
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string | null
+          slug?: string
+        }
+        Relationships: []
       }
     }
     Views: {

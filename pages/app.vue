@@ -1,23 +1,23 @@
 <template>
   <!-- Hero section -->
-  <HeroSection />
+  <MarketingHeroSection />
 
   <!-- Feature section -->
-  <FeaturesSection id="features" />
+  <MarketingFeaturesSection id="features" />
 
   <!-- Testimonial section -->
   <!-- <TestimonialSection /> -->
 
   <!-- Pricing section -->
-  <PricingSection />
+  <MarketingPricingSection />
 
   <!-- CTA section -->
-  <CtaSection />
+  <MarketingCtaSection />
 </template>
 
 <script setup lang="ts">
 definePageMeta({
-  layout: "app",
+  // layout: "app",
 });
 
 const preferredMotion = usePreferredReducedMotion();

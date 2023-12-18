@@ -1,10 +1,10 @@
 import { computed, ref } from "vue";
-import { AppNotification } from "@/types/types";
+import type { AppNotification } from "@/types/types";
 
 const messages = ref<AppNotification[]>([]);
 
 export const useNotification = () => {
-  const addMessage = (notification: AppNotification) => {
+  const addNotification = (notification: AppNotification) => {
     messages.value.push(notification);
   };
 
@@ -19,7 +19,7 @@ export const useNotification = () => {
   };
 
   return {
-    addMessage,
+    addNotification,
     listNotifications,
     deleteNotification,
   };

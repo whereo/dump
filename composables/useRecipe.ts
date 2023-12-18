@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { Database, Table } from "@/types/supabase";
+import { type Database, type Tables, type Json } from "@/types/supabase";
 import { type Recipe } from "@/types/types";
 
 const recipes = ref<Recipe[]>([]);
@@ -28,33 +28,37 @@ const generateUUID = () => {
 };
 
 export const useRecipe = () => {
-  // const user = useSupabaseUser();
+  const user = useSupabaseUser();
   const supabase = useSupabaseClient<Database>();
 
-  const format = (data: Table<"recipes"> | null): Recipe | null => {
+  const format = (data: Tables<"recipes"> | null): Recipe | null => {
     if (data === null) {
       return null;
     }
 
-    const {
-      id,
-      title,
-      description,
-      content: steps,
-      ingredients,
-      portions_count: portionsCount,
-    } = data;
+    const { id, title, description } = data;
 
-    console.log(user.value.id, data.owner_id, user.value.id === data.owner_id);
+    let isOwner = false;
+
+    if (user.value && data.author_id) {
+      isOwner = user.value.id === data.author_id.id;
+    }
+
     return {
-      id,
+      id: String(id),
       title,
       description,
-      steps,
-      ingredients,
-      portionsCount,
-      isOwner: false,
-      // isOwner: user.value && user.value.id === data.owner_id,
+      steps: data.content as Recipe["steps"],
+      ingredients: data.ingredients as Recipe["ingredients"],
+      portionsCount: Number(data.portions_count),
+      author: data.author_id
+        ? {
+            id: String(data.author_id.id),
+            name: data.author_id.username,
+          }
+        : undefined,
+      isOwner,
+      tags: data.recipes_tags.map((t) => t.tag_id),
     };
   };
 
@@ -65,7 +69,11 @@ export const useRecipe = () => {
         const { data } = await supabase
           .from("recipes")
           .select(
-            "id, title, description, content, ingredients, portions_count",
+            `
+            *,
+            author_id(*),
+            recipes_tags(tag_id(slug, name))
+          `,
           )
           .eq("id", id)
           .single();
@@ -80,19 +88,15 @@ export const useRecipe = () => {
   const updateRecipe = async (recipe: Recipe) => {
     await Promise.all(
       recipe.steps.map(async (step) => {
-        if (step.image) {
+        if (step.image && typeof step.image.source !== "string") {
           const filename = `${generateUUID()}-${step.image.source.name}`;
 
-          const { data, error } = await supabase.storage
+          const { error } = await supabase.storage
             .from("recipe-images")
             .upload(filename, step.image.source, {
               cacheControl: "3600",
               upsert: false,
             });
-
-          if (data) {
-            console.log("data", data);
-          }
 
           const {
             data: { publicUrl },
@@ -110,7 +114,7 @@ export const useRecipe = () => {
       .update({
         title: recipe.title,
         description: recipe.description,
-        content: recipe.steps,
+        content: recipe.steps as Json,
         ingredients: recipe.ingredients,
         portions_count: recipe.portionsCount,
       })
@@ -120,7 +124,38 @@ export const useRecipe = () => {
     return data;
   };
 
+  const addRecipe = async (recipe: Omit<Recipe, "id">) => {
+    const { data, error, pending } = await useAsyncData<Recipe | null>(
+      "recipe",
+      async () => {
+        if (!user.value || !user.value.id) throw Error("No user id found");
+
+        const a = await supabase
+          .from("recipes")
+          .insert({
+            title: recipe.title,
+            description: recipe.description,
+            content: recipe.steps as Json,
+            ingredients: recipe.ingredients,
+            portions_count: recipe.portionsCount,
+            owner_id: user.value.id,
+          })
+          .select();
+
+        console.log("all", a);
+
+        const { data } = a;
+
+        console.log(data);
+        return format(data[0]);
+      },
+    );
+
+    return { data, error, pending };
+  };
+
   return {
+    addRecipe,
     getRecipe,
     updateRecipe,
   };

@@ -52,47 +52,4 @@ const props = defineProps<{
 }>();
 
 const list = ref(props.list);
-
-// const ingredients = [
-//   {
-//     name: "Fischfilet",
-//     quantity: 4,
-//   },
-//   {
-//     name: "Ei",
-//     quantity: 2,
-//   },
-//   {
-//     name: "Salz und Pfeffer",
-//     quantity: "nach Belieben",
-//   },
-//   {
-//     name: "Fischgewürze",
-//     quantity: null,
-//   },
-//   {
-//     name: "Fondor",
-//     quantity: "150g",
-//   },
-//   {
-//     name: "Fischfilet",
-//     quantity: 4,
-//   },
-//   {
-//     name: "Ei",
-//     quantity: 2,
-//   },
-//   {
-//     name: "Salz und Pfeffer",
-//     quantity: "nach Belieben",
-//   },
-//   {
-//     name: "Fischgewürze",
-//     quantity: null,
-//   },
-//   {
-//     name: "Fondor",
-//     quantity: "150g",
-//   },
-// ];
 </script>

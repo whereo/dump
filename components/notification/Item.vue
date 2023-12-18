@@ -4,10 +4,12 @@
   >
     <div class="absolute inset-0 bg-stone-800 opacity-80 -z-10"></div>
     <div class="flex items-center gap-x-2">
-      <div class="w-6 h-6"><BellAlertIcon /></div>
+      <div v-if="notification.icon" class="w-6 h-6">
+        <component :is="notification.icon" />
+      </div>
       <div>
         <div class="text-sm font-semibold text-white">
-          {{ props.notification.title }}
+          {{ notification.title }}
         </div>
         <div v-if="notification.content" class="text-sm text-gray-200">
           {{ notification.content }}
@@ -32,9 +34,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { XMarkIcon, BellAlertIcon } from "@heroicons/vue/24/outline";
+import { XMarkIcon } from "@heroicons/vue/24/outline";
+import { type AppNotification } from "@/types/types";
 
-const props = defineProps<{
+defineProps<{
   notification: AppNotification;
 }>();
 
@@ -43,9 +46,9 @@ const emit = defineEmits<{
 }>();
 
 onMounted(() => {
-  // setTimeout(() => {
-  //   onDelete();
-  // }, 3000);
+  setTimeout(() => {
+    onDelete();
+  }, 3000);
 });
 
 const onDelete = () => {

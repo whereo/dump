@@ -150,7 +150,7 @@ onChange((files: File[]) => {
 });
 
 onMounted(() => {
-  focusTitleRef();
+  // focusTitleRef();
   resizeContent();
 });
 

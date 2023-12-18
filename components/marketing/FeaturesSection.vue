@@ -19,7 +19,7 @@
     <dl
       class="mx-auto max-w-2xl sm:mt-20 lg:mt-36 lg:max-w-4xl grid grid-cols-1 gap-y-48"
     >
-      <FeatureCard
+      <MarketingFeatureCard
         v-for="(feature, index) in features"
         :key="feature.name"
         :feature="feature"
@@ -35,7 +35,7 @@
             />
           </div>
         </template>
-      </FeatureCard>
+      </MarketingFeatureCard>
     </dl>
   </div>
 </template>

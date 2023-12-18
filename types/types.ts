@@ -1,15 +1,13 @@
+import type { Component } from "vue";
+
 export type AppNotification = {
+  icon?: Component;
   title: string;
   content?: string;
   action?: {
     name: string;
     callback: Function;
   };
-};
-
-export type RecipeIngredient = {
-  name: string;
-  quantity: string;
 };
 
 export type Recipe = {
@@ -19,7 +17,21 @@ export type Recipe = {
   ingredients: RecipeIngredient[];
   portionsCount: number;
   steps: InstructionStep[];
+  author?: {
+    id: string;
+    name: string;
+  };
   isOwner: boolean;
+  tags: {
+    slug: string;
+    name: string;
+  }[];
+};
+
+export type RecipeIngredient = {
+  name: string;
+  quantity: string;
+  unit: string | null;
 };
 
 export type InstructionStep = {

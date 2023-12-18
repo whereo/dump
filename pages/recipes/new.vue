@@ -1,99 +1,138 @@
 <template>
   <div>
-    <NuxtLayout name="recipe">
-      <div class="leading-6 text-xl">Erzähle uns von deinem Rezept</div>
+    <div class="mx-auto max-w-7xl px-4 py-6">
+      <div class="sticky top-[10px] z-50">
+        <div class="w-full lg:w-1/2 lg:mx-auto px-2">
+          <div
+            class="flex justify-between backdrop-blur-xl border-1 border-gray-400/10 flex justify-between items-center ring-1 ring-gray-500/10 overflow-hidden rounded-xl p-2"
+          >
+            <div class="absolute inset-0 bg-white opacity-80 -z-10"></div>
+            Rezept bearbeiten
 
-      <div class="rounded-xl border border-1 border-gray-900/20 p-4">
-        <client-only>
-          <TipTapEditor ref="editorRef" v-model:json="json" />
-        </client-only>
+            <button
+              type="button"
+              class="inline-flex items-center gap-x-1.5 rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
+              :disabled="savePending"
+              @click="onSave"
+            >
+              <CheckCircleIcon class="-ml-0.5 h-5 w-5" aria-hidden="true" />
+              Speichern
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="">HTML Output <button @click="onClick">render</button></div>
-      <div class="rounded-xl border border-1 border-gray-900/20 p-4">
-        <RenderContent :html="htmlData" />
-      </div>
-    </NuxtLayout>
+      <div
+        class="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-4"
+      >
+        <div class="lg:col-start-2 lg:col-span-2">
+          <input v-model="recipe.title" class="text-xl" />
+        </div>
 
-    <!-- {{ json }} -->
+        <div class="relative lg:col-start-4 lg:row-start-2 lg:h-full">
+          <RenderRecipeIngredients
+            :list="recipe.ingredients"
+            :portions-count="recipe.portionsCount"
+          />
+        </div>
+
+        <div
+          class="lg:col-start-2 lg:row-start-2 lg:col-span-2 lg:row-span-2 lg:row-end-2"
+        >
+          <label>Beschreibung</label>
+          <input v-model="recipe.description" class="text-base" />
+
+          <EditInstructionStep
+            v-for="(step, index) in recipe.steps"
+            :index="index + 1"
+            :step="step"
+            :deleteable="index > 0"
+            @update:step="(data) => onUpdateStep(index, data)"
+            @delete="onDelete(index)"
+          />
+
+          <div class="mt-4 flex justify-center">
+            <button
+              @click="onAddStep"
+              type="button"
+              class="rounded-full bg-orange-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
+            >
+              Schritt hinzufügen
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { CheckCircleIcon } from "@heroicons/vue/24/outline";
+import { type Recipe } from "@/types/types";
+import { useRecipe } from "@/composables/useRecipe";
+
 definePageMeta({
-  layout: false,
+  middleware: ["auth"],
 });
 
-const editorRef = ref();
-const htmlData = ref("");
+const { addRecipe } = useRecipe();
+const { addNotification } = useNotification();
+const router = useRouter();
 
-const onClick = () => {
-  if (!editorRef.value) return;
+const recipe = ref<Omit<Recipe, "id">>({
+  title: "",
+  description: "",
+  steps: [
+    {
+      title: "",
+      content: "",
+    },
+  ],
+  ingredients: [],
+  portionsCount: 2,
+  isOwner: true,
+});
 
-  htmlData.value = editorRef.value.getHTML();
+const savePending = ref(false);
+
+const onSave = async () => {
+  if (recipe.value === null) return;
+
+  savePending.value = true;
+  const { data, error } = await addRecipe(recipe.value);
+
+  if (error.value) {
+    console.error(error.value);
+    return;
+  }
+
+  router.push({
+    name: "recipes-id-edit",
+    params: {
+      id: data.value.id,
+    },
+  });
+
+  addNotification({
+    title: "Rezept erstellt",
+    content: "Das Rezept kann weiter bearbeitet werden",
+  });
+
+  savePending.value = false;
 };
 
-const json = ref({
-  type: "doc",
-  content: [
-    {
-      type: "vue-instruction-step",
-      attrs: { title: "Schritt 1", content: "Irgendein Text" },
-    },
-    { type: "paragraph" },
-    {
-      type: "paragraph",
-      content: [
-        {
-          type: "text",
-          text: "Alle trockenen und frischen Zutaten gründlich miteinander mischen. Kochendes Wasser zugießen, ab ca. 120 ml langsamer gießen und gleichzeitig intensiv rühren. Ca. 10 min stehen lassen, der Teig sollte zügig eindicken. Dann Olivenöl und Zitronensaft untermischen.",
-        },
-      ],
-    },
-    {
-      type: "vue-countdown-timer",
-      attrs: { name: "Teig quellen lassen", duration: 600 },
-    },
-    { type: "paragraph", content: [{ type: "text", text: "Schritt 2" }] },
-    {
-      type: "paragraph",
-      content: [
-        {
-          type: "text",
-          text: 'Mit feuchten Händen - der Teig klebt sehr stark - flache "Burger" formen.',
-        },
-        { type: "hardBreak" },
-        { type: "hardBreak" },
-        { type: "text", text: "Schritt 3" },
-      ],
-    },
-    {
-      type: "paragraph",
-      content: [
-        {
-          type: "text",
-          text: "Eine Pfanne auf mittlere Hitze erhitzen, Olivenöl hineingeben und nacheinander die Falafel zugedeckt braten. Das verhindert das Austrocknen. Möglichst nur einmal wenden.",
-        },
-      ],
-    },
-    { type: "paragraph", content: [{ type: "text", text: "Schritt 4" }] },
-    {
-      type: "paragraph",
-      content: [
-        {
-          type: "text",
-          text: "Nach meinen Erfahrungen ist die benötigte Wassermenge sehr vom Mehl abhängig. Falls es zu breiig wird, noch etwas Kichererbsenmehl hinzufügen.",
-        },
-        { type: "hardBreak" },
-        { type: "hardBreak" },
-        {
-          type: "text",
-          text: 'Nachtrag: Im Handel werden verschiedene Arten von Kichererbsenmehl angeboten, diese haben unterschiedlichen "Wasserbedarf". Der Teig sollte die Konsistenz von Kloßmasse bekommen. Beim ersten Mal mit "unbekanntem" Mehl daher ggf. das Wasser zunächst nur vorsichtig zugeben oder mit mehr Mehl andicken.',
-        },
-      ],
-    },
-    { type: "vue-countdown-timer", attrs: { name: "", duration: "" } },
-    { type: "paragraph" },
-  ],
-});
+const onAddStep = () => {
+  recipe.value.steps.push({
+    title: "",
+    content: "",
+  });
+};
+
+const onUpdateStep = (index: number, data: Recipe["steps"]) => {
+  recipe.value.steps[index] = data;
+};
+
+const onDelete = (index: number) => {
+  recipe.value.steps.splice(index, 1);
+};
 </script>

@@ -16,7 +16,12 @@
           <NuxtLink
             v-for="recipe in recipes"
             :key="recipe.id"
-            :to="`/recipes/${recipe.id}`"
+            :to="{
+              name: 'recipes-id',
+              params: {
+                id: recipe.id,
+              },
+            }"
             class="w-full rounded-xl ring-1 ring-gray-200 p-4 hover:ring-2 hover:ring-orange-300 transition duration-300 hover:bg-gray-50"
           >
             <h5 class="text-base font-semibold leading-6 tracking-tight">
@@ -34,9 +39,20 @@
 </template>
 
 <script setup lang="ts">
-const supabase = useSupabaseClient();
+import { type Database } from "@/types/supabase";
+
+const supabase = useSupabaseClient<Database>();
 
 const { data: recipes } = await supabase
   .from("recipes")
-  .select("id, title, description, content");
+  .select(
+    `
+    id,
+    title,
+    description,
+    author_id(username),
+    recipes_tags(tag_id(*))
+  `,
+  )
+  .order("id", { ascending: false });
 </script>
