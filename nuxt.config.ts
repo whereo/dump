@@ -11,11 +11,4 @@ export default defineNuxtConfig({
   typescript: {
     typeCheck: true,
   },
-  vite: {
-    resolve: {
-      alias: {
-        vue: "vue/dist/vue.esm-bundler",
-      },
-    },
-  },
 });
