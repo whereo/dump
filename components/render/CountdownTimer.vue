@@ -1,12 +1,8 @@
 <template>
-  <div
-    class="mt-4 ring-1 ring-gray-200 rounded-xl p-4 flex justify-between items-center gap-x-2"
-  >
+  <div class="mt-4 ring-1 ring-gray-200 rounded-xl p-4 flex justify-between items-center gap-x-2">
     <div class="flex items-center gap-x-2 cursor-pointer rounded-lg">
-      <div
-        class="h-10 w-10 p-2 rounded-full bg-orange-700 text-white transition duration-100 hover:scale-105 shrink-0"
-        @click="onToggleTimer"
-      >
+      <div class="h-10 w-10 p-2 rounded-full bg-orange-700 text-white transition duration-100 hover:scale-105 shrink-0"
+        @click="onToggleTimer">
         <template v-if="playing">
           <PauseIcon />
         </template>
@@ -15,34 +11,23 @@
         </template>
       </div>
 
-      <div
-        class="text-sm font-semibold leading-6 text-gray-900 font-semibold flex"
-      >
+      <div class="text-sm font-semibold leading-6 text-gray-900">
         <div class="flex items-center gap-x-2">{{ name }}</div>
-        <div
-          v-if="timeElapsed"
-          @click="resetTimer()"
-          class="h-8 w-8 p-1.5 rounded-full bg-gray-50 text-gray-800 cursor-pointer"
-        >
+        <div v-if="timeElapsed" @click="resetTimer()"
+          class="h-8 w-8 p-1.5 rounded-full bg-gray-50 text-gray-800 cursor-pointer">
           <XMarkIcon />
         </div>
       </div>
     </div>
 
     <div class="flex items-center gap-x-2">
-      <div
-        @click="subtractMinute()"
-        class="h-8 w-8 p-1.5 rounded-full bg-gray-50 text-gray-800 cursor-pointer"
-      >
+      <div @click="subtractMinute()" class="h-8 w-8 p-1.5 rounded-full bg-gray-50 text-gray-800 cursor-pointer">
         <MinusIcon />
       </div>
 
       <div class="font-semibold tracking-wide tabular-nums">{{ timeLeft }}</div>
 
-      <div
-        @click="addMinute()"
-        class="h-8 w-8 p-1.5 rounded-full bg-gray-50 text-gray-800 cursor-pointer"
-      >
+      <div @click="addMinute()" class="h-8 w-8 p-1.5 rounded-full bg-gray-50 text-gray-800 cursor-pointer">
         <PlusIcon />
       </div>
     </div>
@@ -68,17 +53,12 @@ const emit = defineEmits<{
   (e: "finished"): void;
 }>();
 
-const { addMessage } = useNotification();
+const { addNotification } = useNotification();
 
 const playing = ref(false);
 const interval = ref();
 
 const secondsLeft = ref(0);
-
-const inputRef = ref<HTMLInputElement>();
-const onEditClick = () => {
-  inputRef.value?.focus();
-};
 
 watchEffect(() => {
   const isString = typeof props.duration === "string";
@@ -96,7 +76,7 @@ const timeLeft = computed(() => {
 });
 
 const timeElapsed = computed(
-  () => props.duration > secondsLeft.value || interval.value,
+  () => Number(props.duration) > secondsLeft.value || interval.value,
 );
 
 const onToggleTimer = () => {
@@ -123,7 +103,7 @@ const startTimer = () => {
     if (secondsLeft.value <= 0) {
       emit("finished");
 
-      addMessage({
+      addNotification({
         title: props.name,
         content: "Timer fertig",
         action: {
@@ -151,7 +131,7 @@ const stopTimer = () => {
 };
 
 const resetTimer = () => {
-  secondsLeft.value = props.duration;
+  secondsLeft.value = Number(props.duration);
   stopTimer();
 };
 

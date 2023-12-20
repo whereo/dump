@@ -1,4 +1,4 @@
-import type { Component } from "vue";
+import { type Component } from "vue";
 
 export type AppNotification = {
   icon?: Component;
@@ -19,7 +19,7 @@ export type Recipe = {
   steps: InstructionStep[];
   author?: {
     id: string;
-    name: string;
+    name: string | null;
   };
   isOwner: boolean;
   tags: {

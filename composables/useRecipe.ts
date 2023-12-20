@@ -27,11 +27,13 @@ const generateUUID = () => {
   });
 };
 
+type ExtendedRecipe = Tables<"recipes"> & { author_id: Tables<"profiles"> } & { recipes_tags: Tables<"recipes_tags">[] }
+
 export const useRecipe = () => {
   const user = useSupabaseUser();
   const supabase = useSupabaseClient<Database>();
 
-  const format = (data: Tables<"recipes"> | null): Recipe | null => {
+  const format = (data: ExtendedRecipe | null): Recipe | null => {
     if (data === null) {
       return null;
     }
@@ -53,17 +55,17 @@ export const useRecipe = () => {
       portionsCount: Number(data.portions_count),
       author: data.author_id
         ? {
-            id: String(data.author_id.id),
-            name: data.author_id.username,
-          }
+          id: String(data.author_id.id),
+          name: data.author_id.username,
+        }
         : undefined,
       isOwner,
-      tags: data.recipes_tags.map((t) => t.tag_id),
+      tags: data.recipes_tags.map((t: { tag_id: any; }) => t.tag_id),
     };
   };
 
   const getRecipe = async (id: string) => {
-    const { data, error, pending } = await useAsyncData<Recipe | null>(
+    const { data, error, pending } = await useAsyncData(
       "recipe",
       async () => {
         const { data } = await supabase
@@ -71,14 +73,14 @@ export const useRecipe = () => {
           .select(
             `
             *,
-            author_id(*),
+            author_id(id, username),
             recipes_tags(tag_id(slug, name))
           `,
           )
           .eq("id", id)
           .single();
 
-        return format(data);
+        return format(data as unknown as ExtendedRecipe);
       },
     );
 
@@ -142,12 +144,12 @@ export const useRecipe = () => {
           })
           .select();
 
-        console.log("all", a);
 
         const { data } = a;
 
-        console.log(data);
-        return format(data[0]);
+        if (!data) return Promise.reject('Error adding recipe')
+
+        return format(data[0] as unknown as ExtendedRecipe);
       },
     );
 
